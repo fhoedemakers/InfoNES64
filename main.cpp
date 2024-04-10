@@ -1,22 +1,8 @@
 #include <stdio.h>
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/divider.h"
-#include "hardware/dma.h"
-#include "hardware/pio.h"
-#include "hardware/i2c.h"
-#include "hardware/interp.h"
-#include "hardware/timer.h"
-#include "hardware/clocks.h"
-#include "hardware/vreg.h"
-#include <hardware/sync.h>
-#include <pico/multicore.h>
-#include <hardware/flash.h>
+
 #include <memory>
 #include <math.h>
-#include <util/dump_bin.h>
-#include <util/exclusive_proc.h>
-#include <util/work_meter.h>
+
 #include <string.h>
 #include <stdarg.h>
 #include <algorithm>
@@ -25,10 +11,6 @@
 #include <InfoNES_System.h>
 #include <InfoNES_pAPU.h>
 
-#include <dvi/dvi.h>
-#include <tusb.h>
-#include <gamepad.h>
-#include "rom_selector.h"
 
 const uint LED_PIN = PICO_DEFAULT_LED_PIN;
 
@@ -41,24 +23,7 @@ namespace
 {
     constexpr uint32_t CPUFreqKHz = 252000;
 
-    constexpr dvi::Config dviConfig_PicoDVI = {
-        .pinTMDS = {10, 12, 14},
-        .pinClock = 8,
-        .invert = true,
-    };
-
-    constexpr dvi::Config dviConfig_PicoDVISock = {
-        .pinTMDS = {12, 18, 16},
-        .pinClock = 14,
-        .invert = false,
-    };
-
-    std::unique_ptr<dvi::DVI> dvi_;
-
-    static constexpr uintptr_t NES_FILE_ADDR = 0x10080000;
-
-    ROMSelector romSelector_;
-    util::ExclusiveProc exclProc_;
+   
 
     enum class ScreenMode
     {
@@ -138,18 +103,7 @@ void saveNVRAM()
     }
 
     printf("save SRAM\n");
-    exclProc_.setProcAndWait([]
-                             {
-        static_assert((SRAM_SIZE & (FLASH_SECTOR_SIZE - 1)) == 0);
-        if (auto addr = getCurrentNVRAMAddr())
-        {
-            auto ofs = addr - XIP_BASE;
-            printf("write flash %x\n", ofs);
-            {
-                flash_range_erase(ofs, SRAM_SIZE);
-                flash_range_program(ofs, SRAM, SRAM_SIZE);
-            }
-        } });
+    // TODO
     printf("done\n");
 
     SRAMwritten = false;
@@ -160,7 +114,8 @@ void loadNVRAM()
     if (auto addr = getCurrentNVRAMAddr())
     {
         printf("load SRAM %x\n", addr);
-        memcpy(SRAM, reinterpret_cast<void *>(addr), SRAM_SIZE);
+       // TODO
+        printf("done\n");
     }
     SRAMwritten = false;
 }
