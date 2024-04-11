@@ -41,10 +41,9 @@
 #include "InfoNES_pAPU.h"
 #include "K6502.h"
 #include <assert.h>
-#include <pico.h>
-#include <tuple>
+#include <cstdint>
 
-#include <util/work_meter.h>
+#include <tuple>
 
 constexpr uint16_t makeTag(int r, int g, int b)
 {
@@ -619,8 +618,7 @@ void (InfoNES_Cycle)()
   // Emulation loop
   for (;;)
   {
-    util::WorkMeterMark(MARKER_START);
-
+    
     // Set a flag if a scanning line is a hit in the sprite #0
     if (SpriteJustHit == PPU_Scanline &&
         PPU_ScanTable[PPU_Scanline] == SCAN_ON_SCREEN)
@@ -657,7 +655,6 @@ void (InfoNES_Cycle)()
       APU_Reg[0x4015] |= 0x40;
     }
 
-    util::WorkMeterMark(MARKER_CPU);
 
     // A mapper function in H-Sync
     MapperHSync();
@@ -687,7 +684,6 @@ int (InfoNES_HSync)()
  */
 
   InfoNES_pAPUHsync(!APU_Mute);
-  util::WorkMeterMark(MARKER_SOUND);
 
   // int tmpv = (PPU_Addr >> 12) + ((PPU_Addr >> 5) << 3);
   // tmpv -= PPU_Scanline >= 240 ? 0 : PPU_Scanline;
@@ -711,7 +707,6 @@ int (InfoNES_HSync)()
     // todo: 描画しないラインにもスプライトオーバーレジスタとかは反映する必要がある
   }
 
-  util::WorkMeterReset(); // 計測起点はここ
 
   /*-------------------------------------------------------------------*/
   /*  Set new scroll values                                            */
@@ -1175,7 +1170,6 @@ void (InfoNES_DrawLine)()
     }
   }
 
-  util::WorkMeterMark(MARKER_BG);
 
   /*-------------------------------------------------------------------*/
   /*  Render a sprite                                                  */
@@ -1438,7 +1432,7 @@ void (InfoNES_DrawLine)()
     if (nSprCnt >= 8)
       PPU_R2 |= R2_MAX_SP; // Set a flag of maximum sprites on scanline
 
-    util::WorkMeterMark(MARKER_SPRITE);
+   
   }
 }
 

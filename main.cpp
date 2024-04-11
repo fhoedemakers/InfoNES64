@@ -25,6 +25,10 @@ const WORD (NesPalette)[64] = {
     CC(0x7fff), CC(0x579f), CC(0x635f), CC(0x6b3f), CC(0x7f1f), CC(0x7f1b), CC(0x7ef6), CC(0x7f75),
     CC(0x7f94), CC(0x73f4), CC(0x57d7), CC(0x5bf9), CC(0x4ffe), CC(0x0000), CC(0x0000), CC(0x0000)};
 
+namespace {
+    ROMSelector romSelector_;
+    static constexpr uintptr_t NES_FILE_ADDR = 0x10080000;
+}
 uint32_t getCurrentNVRAMAddr()
 {
     if (!romSelector_.getCurrentROM())
@@ -59,7 +63,7 @@ void loadNVRAM()
 {
     if (auto addr = getCurrentNVRAMAddr())
     {
-        printf("load SRAM %x\n", addr);
+        printf("load SRAM %lx\n", addr);
        // TODO
         printf("done\n");
     }
