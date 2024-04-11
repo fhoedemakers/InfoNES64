@@ -11,10 +11,6 @@ CFLAGS += $(INCDIR)
 # add INCDIR to CXXFLAGS
 CXXFLAGS += $(INCDIR)
 
-
-BUILD_DIR = build
-include $(N64_INST)/include/n64.mk
-
 OBJS = $(BUILD_DIR)/vtest.o
 
 vtest.z64: N64_ROM_TITLE = "Video Res Test"
