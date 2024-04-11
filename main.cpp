@@ -10,7 +10,7 @@
 #include <InfoNES.h>
 #include <InfoNES_System.h>
 #include <InfoNES_pAPU.h>
-
+#include "rom_selector.h"
 
 
 
