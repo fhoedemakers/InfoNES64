@@ -1,0 +1,30 @@
+CC = gcc
+CXX = g++
+CFLAGS = -Wall -Wextra
+CXXFLAGS = -Wall -Wextra
+LDFLAGS = 
+
+SRCS_C = $(wildcard *.c)
+SRCS_CPP = $(wildcard *.cpp)
+SRCS_SUBDIR = $(wildcard infones/*.c) $(wildcard infones/*.cpp) $(wildcard infones/mapper/*.c) $(wildcard infones/mapper/*.cpp)
+
+OBJS_C = $(SRCS_C:.c=.o)
+OBJS_CPP = $(SRCS_CPP:.cpp=.o)
+OBJS_SUBDIR = $(SRCS_SUBDIR:.c=.o)
+OBJS_SUBDIR := $(OBJS_SUBDIR:.cpp=.o)
+
+all: infones
+
+infones: $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR)
+	$(CXX) $(LDFLAGS) $^ -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR) infones
+
+.PHONY: all clean
