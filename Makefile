@@ -1,4 +1,4 @@
-all: infones.z64
+all: vtest.z64
 .PHONY: all
 
 BUILD_DIR = build
@@ -11,22 +11,15 @@ CFLAGS += $(INCDIR)
 # add INCDIR to CXXFLAGS
 CXXFLAGS += $(INCDIR)
 
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/infones/%.cpp $(SOURCE_DIR)/infones/mapper/%.cpp
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
+BUILD_DIR = build
+include $(N64_INST)/include/n64.mk
 
-# Find all .o files in the build directory and put in OBJS
+OBJS = $(BUILD_DIR)/vtest.o
 
+vtest.z64: N64_ROM_TITLE = "Video Res Test"
 
-OBJS = $(BUILD_DIR)/main.o \
-       $(BUILD_DIR)/InfoNES.o \
-	   $(BUILD_DIR)/K6502.o \
-	   $(BUILD_DIR)/InfoNES_pAPU.o \
-	   $(BUILD_DIR)/InfoNES_Mapper.o
-
-vtest.z64: N64_ROM_TITLE = "InfoNES Nes Emulator"
-
-$(BUILD_DIR)/infones.elf: $(OBJS)
+$(BUILD_DIR)/vtest.elf: $(OBJS)
 
 clean:
 	rm -rf $(BUILD_DIR) *.z64
