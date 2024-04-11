@@ -181,7 +181,7 @@ WORD WorkFrameIdx;
 #else
 //WORD WorkFrame[ NES_DISP_WIDTH * NES_DISP_HEIGHT ];
 WORD *WorkLine = nullptr;
-void __not_in_flash_func(InfoNES_SetLineBuffer)(WORD *p, WORD size)
+void (InfoNES_SetLineBuffer)(WORD *p, WORD size)
 {
   assert(size >= NES_DISP_WIDTH);
   WorkLine = p;
@@ -605,7 +605,7 @@ void InfoNES_Main()
 /*              InfoNES_Cycle() : The loop of emulation              */
 /*                                                                   */
 /*===================================================================*/
-void __not_in_flash_func(InfoNES_Cycle)()
+void (InfoNES_Cycle)()
 {
   /*
  *  The loop of emulation
@@ -676,7 +676,7 @@ void __not_in_flash_func(InfoNES_Cycle)()
 /*              InfoNES_HSync() : A function in H-Sync               */
 /*                                                                   */
 /*===================================================================*/
-int __not_in_flash_func(InfoNES_HSync)()
+int (InfoNES_HSync)()
 {
   /*
  *  A function in H-Sync
@@ -832,7 +832,7 @@ int __not_in_flash_func(InfoNES_HSync)()
 
 namespace
 {
-  void __not_in_flash_func(compositeSprite)(const uint16_t *pal,
+  void (compositeSprite)(const uint16_t *pal,
                                             const uint8_t *spr,
                                             uint16_t *buf)
   {
@@ -869,7 +869,7 @@ namespace
 /*              InfoNES_DrawLine() : Render a scanline               */
 /*                                                                   */
 /*===================================================================*/
-void __not_in_flash_func(InfoNES_DrawLine)()
+void (InfoNES_DrawLine)()
 {
   /*
  *  Render a scanline
@@ -1447,7 +1447,7 @@ void __not_in_flash_func(InfoNES_DrawLine)()
 /* InfoNES_GetSprHitY() : Get a position of scanline hits sprite #0  */
 /*                                                                   */
 /*===================================================================*/
-void __not_in_flash_func(InfoNES_GetSprHitY)()
+void (InfoNES_GetSprHitY)()
 {
   /*
  * Get a position of scanline hits sprite #0
@@ -1574,7 +1574,7 @@ void __not_in_flash_func(InfoNES_GetSprHitY)()
 /*            InfoNES_SetupChr() : Develop character data            */
 /*                                                                   */
 /*===================================================================*/
-void __not_in_flash_func(InfoNES_SetupChr)()
+void (InfoNES_SetupChr)()
 {
   /*
  *  Develop character data
