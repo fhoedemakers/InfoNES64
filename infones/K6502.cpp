@@ -14,7 +14,7 @@
 #include "InfoNES_System.h"
 
 #include <stdio.h>
-#include <pico.h>
+
 
 /*-------------------------------------------------------------------*/
 /*  Operation Macros                                                 */

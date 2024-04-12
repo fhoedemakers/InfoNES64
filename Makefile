@@ -1,4 +1,4 @@
-all: vtest.z64
+all: infones.z64
 .PHONY: all
 
 BUILD_DIR = build
@@ -11,9 +11,19 @@ CFLAGS += $(INCDIR)
 # add INCDIR to CXXFLAGS
 CXXFLAGS += $(INCDIR)
 
+SRCS_C = $(wildcard *.c)
+SRCS_CPP = $(wildcard *.cpp)
+SRCS_SUBDIR = $(wildcard infones/*.c) $(wildcard infones/*.cpp) $(wildcard infones/mapper/*.c) $(wildcard infones/mapper/*.cpp)
+
+OBJS_C = $(SRCS_C:.c=.o)
+OBJS_CPP = $(SRCS_CPP:.cpp=.o)
+OBJS_SUBDIR_C = $(SRCS_SUBDIR:.c=.o)
+OBJS_SUBDIR_CPP = $(OBJS_SUBDIR:.cpp=.o)
+
+
 OBJS = $(BUILD_DIR)/vtest.o
 
-vtest.z64: N64_ROM_TITLE = "Video Res Test"
+infones.z64: N64_ROM_TITLE = "Video Res Test"
 
 $(BUILD_DIR)/vtest.elf: $(OBJS)
 

@@ -136,8 +136,10 @@ void InfoNES_SoundClose()
 {
 }
 
-
-
+int InfoNES_GetSoundBufferSize()
+{
+    return 256; // TODO
+}
 void (InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
 {
     

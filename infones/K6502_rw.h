@@ -17,7 +17,7 @@
 #include "InfoNES.h"
 #include "InfoNES_System.h"
 #include "InfoNES_pAPU.h"
-#include <pico.h>
+
 #include <stdio.h>
 
 /*===================================================================*/

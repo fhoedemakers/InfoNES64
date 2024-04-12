@@ -325,38 +325,38 @@ void InfoNES_Fin()
 /*                  InfoNES_Load() : Load a cassette                 */
 /*                                                                   */
 /*===================================================================*/
-int InfoNES_Load(const char *pszFileName)
-{
-  /*
- *  Load a cassette
- *
- *  Parameters
- *    const char *pszFileName            (Read)
- *      File name of ROM image
- *
- *  Return values
- *     0 : It was finished normally.
- *    -1 : An error occurred.
- *
- *  Remarks
- *    Read a ROM image in the memory. 
- *    Reset InfoNES.
- */
+// int InfoNES_Load(const char *pszFileName)
+// {
+//   /*
+//  *  Load a cassette
+//  *
+//  *  Parameters
+//  *    const char *pszFileName            (Read)
+//  *      File name of ROM image
+//  *
+//  *  Return values
+//  *     0 : It was finished normally.
+//  *    -1 : An error occurred.
+//  *
+//  *  Remarks
+//  *    Read a ROM image in the memory. 
+//  *    Reset InfoNES.
+//  */
 
-  // Release a memory for ROM
-  InfoNES_ReleaseRom();
+//   // Release a memory for ROM
+//   InfoNES_ReleaseRom();
 
-  // Read a ROM image in the memory
-  if (InfoNES_ReadRom(pszFileName) < 0)
-    return -1;
+//   // Read a ROM image in the memory
+//   if (InfoNES_ReadRom(pszFileName) < 0)
+//     return -1;
 
-  // Reset InfoNES
-  if (InfoNES_Reset() < 0)
-    return -1;
+//   // Reset InfoNES
+//   if (InfoNES_Reset() < 0)
+//     return -1;
 
-  // Successful
-  return 0;
-}
+//   // Successful
+//   return 0;
+// }
 
 /*===================================================================*/
 /*                                                                   */

@@ -1,21 +1,21 @@
 CC = gcc
 CXX = g++
-CFLAGS = -Wall -Wextra
-CXXFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -std=gnu++17 -Iinfones/mapper -Iinfones
+CXXFLAGS = -Wall -Wextra -std=gnu++17 -Iinfones/mapper -Iinfones -Wno-unused-parameter
 LDFLAGS = 
 
 SRCS_C = $(wildcard *.c)
 SRCS_CPP = $(wildcard *.cpp)
-SRCS_SUBDIR = $(wildcard infones/*.c) $(wildcard infones/*.cpp) $(wildcard infones/mapper/*.c) $(wildcard infones/mapper/*.cpp)
+SRCS_SUBDIR = $(wildcard infones/*.c) $(wildcard infones/*.cpp)
 
 OBJS_C = $(SRCS_C:.c=.o)
 OBJS_CPP = $(SRCS_CPP:.cpp=.o)
 OBJS_SUBDIR = $(SRCS_SUBDIR:.c=.o)
 OBJS_SUBDIR := $(OBJS_SUBDIR:.cpp=.o)
 
-all: infones
+all: infones64
 
-infones: $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR)
+infones64: $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR)
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 %.o: %.c
@@ -25,6 +25,6 @@ infones: $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR) infones
+	rm -f $(OBJS_C) $(OBJS_CPP) $(OBJS_SUBDIR) infones64
 
 .PHONY: all clean
