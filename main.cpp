@@ -12,8 +12,8 @@
 #include <InfoNES_pAPU.h>
 #include "rom_selector.h"
 
-
-
+// test
+int 
 #define CC(x) (((x >> 1) & 15) | (((x >> 6) & 15) << 4) | (((x >> 11) & 15) << 8))
 const WORD (NesPalette)[64] = {
     CC(0x39ce), CC(0x1071), CC(0x0015), CC(0x2013), CC(0x440e), CC(0x5402), CC(0x5000), CC(0x3c20),
