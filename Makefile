@@ -2,7 +2,7 @@ all: infones64.z64
 .PHONY: all
 
 BUILD_DIR = build
-include $(N64_INST)/include/n64.mk
+include n64.mk
 
 # add current folder and infones subfolder to include path
 INCDIR = -I. -Iinfones
@@ -11,8 +11,8 @@ CFLAGS += $(INCDIR)
 # add INCDIR to CXXFLAGS
 CXXFLAGS += $(INCDIR)
 
-SUBDIRS = $(SOURCE_DIR) $(SOURCE_DIR)/infones
-$(BUILD_DIR)/%.o: %.c 
+SUBDIRS = $(SOURCE_DIR) $(SOURCE_DIR)/infones $(SOURCE_DIR)/assets
+#$(BUILD_DIR)/%.o: %.c 
 # 	@mkdir -p $(dir $@)
 # 	@echo "    [CC] $<"
 # 	$(CC) -c $(CFLAGS) -o $@ $<
@@ -22,10 +22,10 @@ $(BUILD_DIR)/%.o: %.c
 # 	@echo "    [CXX] $<"
 # 	$(CXX) -c $(CXXFLAGS) -o $@ $<vpath %.c $(SUBDIRS)
 vpath %.cpp $(SUBDIRS)
-
+vpath %.c $(SUBDIRS)
 # 
 
-OBJS = $(BUILD_DIR)/infones64.o $(BUILD_DIR)/InfoNES.o
+OBJS = $(BUILD_DIR)/infones64.o $(BUILD_DIR)/InfoNES.o $(BUILD_DIR)/tar.o $(BUILD_DIR)/InfoNES_Mapper.o  $(BUILD_DIR)/InfoNES_pAPU.o $(BUILD_DIR)/K6502.o $(BUILD_DIR)/builtinrom.o 
 
 infones64.z64: N64_ROM_TITLE = "Video Res Test"
 

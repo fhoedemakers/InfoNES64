@@ -875,7 +875,7 @@ void (InfoNES_DrawLine)()
   int nY;
   int nY4;
   int nYBit;
-  WORD *pPalTbl;
+  //WORD *pPalTbl;
   BYTE *pAttrBase;
   WORD *pPoint;
   int nNameTable;
