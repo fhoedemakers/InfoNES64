@@ -4,7 +4,7 @@
 #include "bladebuster.c"
 #endif
 #ifdef BUILTINROM_SMB3
-#include "smb34.c"
+#include "smb3.c"
 #endif
 
 char *GetBuiltinROMName()

@@ -5,5 +5,8 @@
             "binaryPath": "/home/frank/projects/private/InfoNES64/build/infones64.elf",
             "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "random": "cpp"
+    }
 }

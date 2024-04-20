@@ -13,25 +13,56 @@
 #include "libdragon.h"
 #include "rom_selector.h"
 
-#include "builtinrom.h"	
+#include "builtinrom.h"
 
+/* hardware definitions */
+// Pad buttons
+#define A_BUTTON(a)     ((a) & 0x8000)
+#define B_BUTTON(a)     ((a) & 0x4000)
+#define Z_BUTTON(a)     ((a) & 0x2000)
+#define START_BUTTON(a) ((a) & 0x1000)
 
-// test
+// D-Pad
+#define DU_BUTTON(a)    ((a) & 0x0800)
+#define DD_BUTTON(a)    ((a) & 0x0400)
+#define DL_BUTTON(a)    ((a) & 0x0200)
+#define DR_BUTTON(a)    ((a) & 0x0100)
 
-#define CC(x) (((x >> 1) & 15) | (((x >> 6) & 15) << 4) | (((x >> 11) & 15) << 8))
-const WORD (NesPalette)[64] = {
-    CC(0x39ce), CC(0x1071), CC(0x0015), CC(0x2013), CC(0x440e), CC(0x5402), CC(0x5000), CC(0x3c20),
-    CC(0x20a0), CC(0x0100), CC(0x0140), CC(0x00e2), CC(0x0ceb), CC(0x0000), CC(0x0000), CC(0x0000),
-    CC(0x5ef7), CC(0x01dd), CC(0x10fd), CC(0x401e), CC(0x5c17), CC(0x700b), CC(0x6ca0), CC(0x6521),
-    CC(0x45c0), CC(0x0240), CC(0x02a0), CC(0x0247), CC(0x0211), CC(0x0000), CC(0x0000), CC(0x0000),
-    CC(0x7fff), CC(0x1eff), CC(0x2e5f), CC(0x223f), CC(0x79ff), CC(0x7dd6), CC(0x7dcc), CC(0x7e67),
-    CC(0x7ae7), CC(0x4342), CC(0x2769), CC(0x2ff3), CC(0x03bb), CC(0x0000), CC(0x0000), CC(0x0000),
-    CC(0x7fff), CC(0x579f), CC(0x635f), CC(0x6b3f), CC(0x7f1f), CC(0x7f1b), CC(0x7ef6), CC(0x7f75),
-    CC(0x7f94), CC(0x73f4), CC(0x57d7), CC(0x5bf9), CC(0x4ffe), CC(0x0000), CC(0x0000), CC(0x0000)};
+// Triggers
+#define TL_BUTTON(a)    ((a) & 0x0020)
+#define TR_BUTTON(a)    ((a) & 0x0010)
 
-namespace {
+// Yellow C buttons
+#define CU_BUTTON(a)    ((a) & 0x0008)
+#define CD_BUTTON(a)    ((a) & 0x0004)
+#define CL_BUTTON(a)    ((a) & 0x0002)
+#define CR_BUTTON(a)    ((a) & 0x0001)
+
+#define PAD_DEADZONE     5
+#define PAD_ACCELERATION 10
+#define PAD_CHECK_TIME   40
+
+volatile int gTicks; /* incremented every vblank */
+display_context_t _dc;
+
+bool fps_enabled = false;
+
+// RGB551 nes color palette
+const WORD NesPalette[64] = {
+    0x6319, 0x00ED, 0x2033, 0x502D, 0x701D, 0x8009, 0x7041, 0x5141, 
+    0x2201, 0x0281, 0x02C1, 0x0289, 0x01DD, 0x0001, 0x0001, 0x0001, 
+    0xAD6B, 0x0ABF, 0x49BF, 0x88BF, 0xB875, 0xD09B, 0xC141, 0x9A81, 
+    0x63C1, 0x24C1, 0x0501, 0x04D1, 0x03ED, 0x0001, 0x0001, 0x0001, 
+    0xFFFF, 0x557F, 0x943F, 0xD33F, 0xFABF, 0xFAF3, 0xFB95, 0xFCC1, 
+    0xBE01, 0x7F01, 0x4785, 0x275F, 0x2EBD, 0x4A53, 0x0001, 0x0001, 
+    0xFFFF, 0xB73F, 0xCEBF, 0xEE3F, 0xFDFF, 0xFDFD, 0xFE31, 0xFEA7, 
+    0xEF21, 0xCFA1, 0xB7E7, 0xAFF1, 0xAFBD, 0xBDEF, 0x0001, 0x0001
+};
+
+namespace
+{
     ROMSelector romSelector_;
-    static  uintptr_t NES_FILE_ADDR = (uintptr_t)builtinrom;
+    static uintptr_t NES_FILE_ADDR = (uintptr_t)builtinrom;
 }
 uint32_t getCurrentNVRAMAddr()
 {
@@ -68,15 +99,109 @@ void loadNVRAM()
     if (auto addr = getCurrentNVRAMAddr())
     {
         debugf("load SRAM %lx\n", addr);
-       // TODO
+        // TODO
         debugf("done\n");
     }
     SRAMwritten = false;
 }
 
+struct controller_data gKeys;
+static DWORD prevButtons[2]{};
+static int rapidFireMask[2]{};
+static int rapidFireCounter = 0;
 void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
 {
-   
+    static constexpr int LEFT = 1 << 6;
+    static constexpr int RIGHT = 1 << 7;
+    static constexpr int UP = 1 << 4;
+    static constexpr int DOWN = 1 << 5;
+    static constexpr int SELECT = 1 << 2;
+    static constexpr int START = 1 << 3;
+    static constexpr int A = 1 << 0;
+    static constexpr int B = 1 << 1;
+  controller_scan();
+     gKeys = get_keys_pressed();
+
+      ++rapidFireCounter;
+    bool reset = false;
+
+    for (int i = 0; i < 2; ++i)
+    {
+        auto &dst = i == 0 ? *pdwPad1 : *pdwPad2;
+        auto gp = gKeys.c[i].data >> 16;
+
+        int v = (DL_BUTTON(gp) ? LEFT : 0) |
+                (DR_BUTTON(gp) ? RIGHT : 0) |
+                (DU_BUTTON(gp) ? UP : 0) |
+                (DD_BUTTON(gp) ? DOWN : 0) |
+                (A_BUTTON(gp) ? A : 0) |
+                (B_BUTTON(gp) ? B : 0) |
+                (Z_BUTTON(gp) ? SELECT : 0) |
+                (START_BUTTON(gp)  ? START : 0) |
+                0;
+      
+        int rv = v;
+        if (rapidFireCounter & 2)
+        {
+            // 15 fire/sec
+            rv &= ~rapidFireMask[i];
+        }
+
+        dst = rv;
+
+        auto p1 = v;
+
+        auto pushed = v & ~prevButtons[i];
+
+        // Toggle frame rate
+        if (p1 & START)
+        {
+            if (pushed & A)
+            {
+                fps_enabled = !fps_enabled;
+            }
+        }
+        if (p1 & SELECT)
+        {
+            // if (pushed & LEFT)
+            // {
+            //     saveNVRAM();
+            //     romSelector_.prev();
+            //     reset = true;
+            // }
+            // if (pushed & RIGHT)
+            // {
+            //     saveNVRAM();
+            //     romSelector_.next();
+            //     reset = true;
+            // }
+            if (pushed & START)
+            {
+                saveNVRAM();
+                reset = true;
+            }
+            if (pushed & A)
+            {
+                rapidFireMask[i] ^= A_BUTTON(gp);
+            }
+            if (pushed & B)
+            {
+                rapidFireMask[i] ^= B_BUTTON(gp);
+            }
+            // if (pushed & UP)
+            // {
+            //     screenMode(-1);
+            // }
+            // else if (pushed & DOWN)
+            // {
+            //     screenMode(+1);
+            // }
+        }
+
+        prevButtons[i] = v;
+    }
+
+    *pdwSystem = reset ? PAD_SYS_QUIT : 0;
 }
 
 void InfoNES_MessageBox(const char *pszMsg, ...)
@@ -142,41 +267,39 @@ void InfoNES_SoundClose()
 
 int InfoNES_GetSoundBufferSize()
 {
-    //debugf("GetSoundBufferSize\n");
+    // debugf("GetSoundBufferSize\n");
     return 256; // TODO
 }
-void (InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
+void(InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
 {
-    
 }
 
 extern WORD PC;
 
-int framecounter=0;
+int framecounter = 0;
 void InfoNES_LoadFrame()
 {
-   //debugf("InfoNES_LoadFrame %d\n", framecounter++);
-   framecounter++;
-   
-    if (framecounter % 60 == 0)
-    {
-         debugf("FPS: %d\n", framecounter);
-         framecounter = 0;
+    display_show(_dc);
+    framecounter++;  
+  
+}
+
+WORD buf[256];
+void(InfoNES_PreDrawLine)(int line)
+{
+    if ( line == 4) {
+        // debugf("Getting Display Context %d\n", line);
+        _dc = display_get();
     }
-
+    // get the correct position in the framebuffer
+    WORD *buffer = ((WORD *)(_dc)->buffer) + (line << 8);
+    assert(buffer != nullptr);
+    InfoNES_SetLineBuffer(buffer, 256);
 }
 
-
-
-WORD buffer[256];
-void (InfoNES_PreDrawLine)(int line)
+void(InfoNES_PostDrawLine)(int line)
 {
-     InfoNES_SetLineBuffer(buffer, 256);
-}
-
-void (InfoNES_PostDrawLine)(int line)
-{
-
+    // debugf("InfoNES_PostDrawLine %d\n", line);
 }
 
 bool loadAndReset()
@@ -211,17 +334,33 @@ int InfoNES_Menu()
     return 0;
 }
 
-
+/* vblank callback */
+void vblCallback(void)
+{
+    gTicks++;
+}
 
 int main()
 {
 
-    debug_init(DEBUG_FEATURE_LOG_ISVIEWER);  
+    debug_init(DEBUG_FEATURE_LOG_ISVIEWER);
     debugf("Starting InfoNES 64, a Nintendo Entertainment System emulator for the Nintendo 64\n");
-    debugf("Built on %s %s\n", __DATE__, __TIME__);
-  
+    debugf("Built on %s %s using libdragon\n", __DATE__, __TIME__);
     debugf("Now running %s\n", GetBuiltinROMName());
+
+    /* Initialize peripherals */
+    display_init(RESOLUTION_256x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    register_VI_handler(vblCallback);
+    controller_init();
+
     romSelector_.init(NES_FILE_ADDR);
+    _dc = display_get();
+    void *buffer = (_dc)->buffer;
+    debugf("Flags: %d\n", _dc->flags);
+    debugf("Width: %d\n", _dc->width);
+    debugf("Height: %d\n", _dc->height);
+    debugf("Stride: %d\n", _dc->stride);
+     display_show(_dc);
     InfoNES_Main();
     return 0;
 }
