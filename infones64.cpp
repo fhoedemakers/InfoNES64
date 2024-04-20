@@ -13,15 +13,9 @@
 #include "libdragon.h"
 #include "rom_selector.h"
 
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 #include "builtinrom.h"	
-#ifdef __cplusplus
-}
-#endif
+
+
 // test
 
 #define CC(x) (((x >> 1) & 15) | (((x >> 6) & 15) << 4) | (((x >> 11) & 15) << 8))
@@ -161,7 +155,15 @@ extern WORD PC;
 int framecounter=0;
 void InfoNES_LoadFrame()
 {
-   debugf("InfoNES_LoadFrame %d\n", framecounter++);
+   //debugf("InfoNES_LoadFrame %d\n", framecounter++);
+   framecounter++;
+   
+    if (framecounter % 60 == 0)
+    {
+         debugf("FPS: %d\n", framecounter);
+         framecounter = 0;
+    }
+
 }
 
 
@@ -213,17 +215,13 @@ int InfoNES_Menu()
 
 int main()
 {
+
+    debug_init(DEBUG_FEATURE_LOG_ISVIEWER);  
+    debugf("Starting InfoNES 64, a Nintendo Entertainment System emulator for the Nintendo 64\n");
+    debugf("Built on %s %s\n", __DATE__, __TIME__);
   
-    int i = 0;
-
-    i = 100 + 200;
-
-    debug_init(DEBUG_FEATURE_LOG_ISVIEWER);
-    debugf("%d\n", i);
-    debugf("Hello, World!\n");
+    debugf("Now running %s\n", GetBuiltinROMName());
     romSelector_.init(NES_FILE_ADDR);
-
     InfoNES_Main();
-
     return 0;
 }

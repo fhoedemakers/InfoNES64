@@ -3,6 +3,9 @@
 // Blade Buster (http://hlc6502.web.fc2.com/Bbuster.htm)
 // Generated from BladeBuster.nes using
 // xxd -i BladBuster.nes
+
+
+
 #define BUILTINROMNAME "Blade Buster"
 
 unsigned char builtinrom[] = {
@@ -32779,3 +32782,6 @@ unsigned char builtinrom[] = {
 };
 unsigned int builtinrom_len = 393232;
 
+#ifdef __cplusplus
+}
+#endif

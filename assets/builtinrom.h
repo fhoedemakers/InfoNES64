@@ -4,7 +4,16 @@
 // Generated from BladeBuster.nes using
 // xxd -i BladBuster.nes > builtinrom.h
 
-// Remove the #pragma once directive
+#define BUILTINROM_BLADEBUSTER
 extern unsigned char builtinrom[];
 extern unsigned int builtinrom_len;
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+char *GetBuiltinROMName();
+#ifdef __cplusplus
+}
+#endif
