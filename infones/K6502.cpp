@@ -488,18 +488,18 @@ static void (step)(int wClocks)
   {
     // if (PC == 0xc449 || PC == 0xc955)
     // {
-    //   printf("%04x:%02x\n", PC, A);
+    //   debugf("%04x:%02x\n", PC, A);
     // }
 
     // if (PC == 0xc44a)
     // {
-    //   printf("A:%02X X:%02X Y:%02X SP:%02X F:%02X  %04X\n", A, X, Y, SP, F, PC);
+    //   debugf("A:%02X X:%02X Y:%02X SP:%02X F:%02X  %04X\n", A, X, Y, SP, F, PC);
     // }
 
     // Read an instruction
     byCode = K6502_Read(PC++);
 
-    //    printf("PC %04x %02x\n", PC - 1, byCode);
+    //    debugf("PC %04x %02x\n", PC - 1, byCode);
 
     // Execute an instruction.
     switch (byCode)

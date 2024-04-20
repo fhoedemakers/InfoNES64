@@ -8,6 +8,10 @@
 
 inline bool checkNESMagic(const uint8_t *data)
 {
+    char buffer[4];
+    memcpy(buffer, data, 4);
+    buffer[3] = 0;
+    debugf("Magic: %s\n", buffer);
     return memcmp(data, "NES\x1a", 4) == 0;
 }
 
@@ -31,15 +35,15 @@ public:
         if (checkNESMagic(p))
         {
             singleROM_ = p;
-            printf("Single ROM.\n");
+            debugf("Single ROM.\n");
             return;
         }
 
         entries_ = parseTAR(p, checkNESMagic);
-        printf("%zd ROMs.\n", entries_.size());
+        debugf("%zd ROMs.\n", entries_.size());
         for (auto &e : entries_)
         {
-            printf("  %s: %p, %zd\n", e.filename.data(), e.data, e.size);
+            debugf("  %s: %p, %zd\n", e.filename.data(), e.data, e.size);
         }
     }
 

@@ -790,7 +790,7 @@ int (InfoNES_HSync)()
 
     // Set a V-Blank flag
     PPU_R2 |= R2_IN_VBLANK;
-    // printf("vb : pc %04x, r2 %02x\n", PC, PPU_R2);
+    // debugf("vb : pc %04x, r2 %02x\n", PC, PPU_R2);
 
     // Reset latch flag
     // PPU_Latch_Flag = 0;
@@ -808,7 +808,7 @@ int (InfoNES_HSync)()
     // NMI on V-Blank
     if (PPU_R0 & R0_NMI_VB)
     {
-      //      printf("nmi %04x %02x\n", PC, PPU_R0);
+      //      debugf("nmi %04x %02x\n", PC, PPU_R0);
       NMI_REQ;
     }
 

@@ -5,7 +5,7 @@ BUILD_DIR = build
 include n64.mk
 
 # add current folder and infones subfolder to include path
-INCDIR = -I. -Iinfones
+INCDIR = -I. -Iinfones -Iassets
 # add INCDIR to CFLAGS
 CFLAGS += $(INCDIR)
 # add INCDIR to CXXFLAGS
@@ -27,7 +27,7 @@ vpath %.c $(SUBDIRS)
 
 OBJS = $(BUILD_DIR)/infones64.o $(BUILD_DIR)/InfoNES.o $(BUILD_DIR)/tar.o $(BUILD_DIR)/InfoNES_Mapper.o  $(BUILD_DIR)/InfoNES_pAPU.o $(BUILD_DIR)/K6502.o $(BUILD_DIR)/builtinrom.o 
 
-infones64.z64: N64_ROM_TITLE = "Video Res Test"
+infones64.z64: N64_ROM_TITLE = "InfoNES NES emulator"
 
 $(BUILD_DIR)/infones64.elf: $(OBJS)
 

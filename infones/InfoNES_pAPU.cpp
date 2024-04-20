@@ -1078,7 +1078,7 @@ void InfoNES_pAPUVsync()
       --ApuC2EnvVol;
     }
   }
-  //  printf("C2:%d:%d:%d\n", ApuC2Env, ApuC2EnvPhase, ApuC2EnvVol);
+  //  debugf("C2:%d:%d:%d\n", ApuC2Env, ApuC2EnvPhase, ApuC2EnvVol);
 
   /* Frequency sweeping at a rate of ( Sweep Delay + 1) / 120 secs */
   if (ApuC2SweepOn && ApuC2SweepShifts)
@@ -1122,7 +1122,7 @@ void InfoNES_pAPUVsync()
   {
     ApuC3Atl--;
   }
-  // printf("3: %d, %d, %d, %d\n", ApuC3Atl, ApuC3Llc, ApuC3Freq, ApuC3Holdnote);
+  // debugf("3: %d, %d, %d, %d\n", ApuC3Atl, ApuC3Llc, ApuC3Freq, ApuC3Holdnote);
 
   if (ApuC4Atl && !ApuC4Hold)
   {
@@ -1144,9 +1144,9 @@ void InfoNES_pAPUVsync()
       --ApuC4EnvVol;
     }
   }
-  // printf("C2: %02x %02x %02x %02x: %d %d\n", ApuC2a, ApuC2b, ApuC2c, ApuC2d, ApuC2Atl, ApuC2EnvVol);
-  // printf("C4: %02x  %02x %02x: %d %d\n", ApuC4a, ApuC4c, ApuC4d, ApuC4Atl, ApuC4EnvVol);
-  // printf("C5: %02x %02x %02x %02x, lp%d, v%02x, %04x, %d\n",
+  // debugf("C2: %02x %02x %02x %02x: %d %d\n", ApuC2a, ApuC2b, ApuC2c, ApuC2d, ApuC2Atl, ApuC2EnvVol);
+  // debugf("C4: %02x  %02x %02x: %d %d\n", ApuC4a, ApuC4c, ApuC4d, ApuC4Atl, ApuC4EnvVol);
+  // debugf("C5: %02x %02x %02x %02x, lp%d, v%02x, %04x, %d\n",
   //        ApuC5Reg[0], ApuC5Reg[1], ApuC5Reg[2], ApuC5Reg[3],
   //        ApuC5Looping, ApuC5DpcmValue, ApuC5Address, ApuC5DmaLength);
 }

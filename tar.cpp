@@ -7,6 +7,7 @@
 #include <optional>
 #include <string.h>
 #include <stdio.h>
+#include "libdragon.h"
 
 namespace
 {
@@ -64,7 +65,7 @@ parseTAR(const void *_p, bool (*validateEntry)(const uint8_t *))
         TAREntry e;
         if (strcmp("ustar", p + 257) != 0)
         {
-            printf("parseTAR: invalid magic\n");
+            debugf("parseTAR: invalid magic\n");
             return {};
         }
         if (auto size = parseOct(p + 124, 12))
@@ -73,7 +74,7 @@ parseTAR(const void *_p, bool (*validateEntry)(const uint8_t *))
         }
         else
         {
-            printf("parseTAR: invalid size\n");
+            debugf("parseTAR: invalid size\n");
             return {};
         }
         e.filename = p;

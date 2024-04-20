@@ -10,8 +10,18 @@
 #include <InfoNES.h>
 #include <InfoNES_System.h>
 #include <InfoNES_pAPU.h>
+#include "libdragon.h"
 #include "rom_selector.h"
 
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include "builtinrom.h"	
+#ifdef __cplusplus
+}
+#endif
 // test
 
 #define CC(x) (((x >> 1) & 15) | (((x >> 6) & 15) << 4) | (((x >> 11) & 15) << 8))
@@ -27,7 +37,7 @@ const WORD (NesPalette)[64] = {
 
 namespace {
     ROMSelector romSelector_;
-    static constexpr uintptr_t NES_FILE_ADDR = 0x10080000;
+    static  uintptr_t NES_FILE_ADDR = (uintptr_t)builtinrom;
 }
 uint32_t getCurrentNVRAMAddr()
 {
@@ -40,7 +50,7 @@ uint32_t getCurrentNVRAMAddr()
     {
         return {};
     }
-    printf("SRAM slot %d\n", slot);
+    debugf("SRAM slot %d\n", slot);
     return NES_FILE_ADDR - SRAM_SIZE * (slot + 1);
 }
 
@@ -48,13 +58,13 @@ void saveNVRAM()
 {
     if (!SRAMwritten)
     {
-        printf("SRAM not updated.\n");
+        debugf("SRAM not updated.\n");
         return;
     }
 
-    printf("save SRAM\n");
+    debugf("save SRAM\n");
     // TODO
-    printf("done\n");
+    debugf("done\n");
 
     SRAMwritten = false;
 }
@@ -63,9 +73,9 @@ void loadNVRAM()
 {
     if (auto addr = getCurrentNVRAMAddr())
     {
-        printf("load SRAM %lx\n", addr);
+        debugf("load SRAM %lx\n", addr);
        // TODO
-        printf("done\n");
+        debugf("done\n");
     }
     SRAMwritten = false;
 }
@@ -77,12 +87,12 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
 
 void InfoNES_MessageBox(const char *pszMsg, ...)
 {
-    printf("[MSG]");
+    debugf("[MSG]");
     va_list args;
     va_start(args, pszMsg);
-    vprintf(pszMsg, args);
+    vdebugf(pszMsg, args);
     va_end(args);
-    printf("\n");
+    debugf("\n");
 }
 
 bool parseROM(const uint8_t *nesFile)
@@ -138,6 +148,7 @@ void InfoNES_SoundClose()
 
 int InfoNES_GetSoundBufferSize()
 {
+    //debugf("GetSoundBufferSize\n");
     return 256; // TODO
 }
 void (InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
@@ -147,17 +158,18 @@ void (InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, B
 
 extern WORD PC;
 
+int framecounter=0;
 void InfoNES_LoadFrame()
 {
-   
+   debugf("InfoNES_LoadFrame %d\n", framecounter++);
 }
 
 
 
-
+WORD buffer[256];
 void (InfoNES_PreDrawLine)(int line)
 {
-    
+     InfoNES_SetLineBuffer(buffer, 256);
 }
 
 void (InfoNES_PostDrawLine)(int line)
@@ -170,20 +182,20 @@ bool loadAndReset()
     auto rom = romSelector_.getCurrentROM();
     if (!rom)
     {
-        printf("ROM does not exists.\n");
+        debugf("ROM does not exists.\n");
         return false;
     }
 
     if (!parseROM(rom))
     {
-        printf("NES file parse error.\n");
+        debugf("NES file parse error.\n");
         return false;
     }
     loadNVRAM();
 
     if (InfoNES_Reset() < 0)
     {
-        printf("NES reset error.\n");
+        debugf("NES reset error.\n");
         return false;
     }
 
@@ -202,10 +214,14 @@ int InfoNES_Menu()
 int main()
 {
   
+    int i = 0;
 
+    i = 100 + 200;
+
+    debug_init(DEBUG_FEATURE_LOG_ISVIEWER);
+    debugf("%d\n", i);
+    debugf("Hello, World!\n");
     romSelector_.init(NES_FILE_ADDR);
-
-    // util::dumpMemory((void *)NES_FILE_ADDR, 1024);
 
     InfoNES_Main();
 

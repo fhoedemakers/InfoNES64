@@ -1,4 +1,7 @@
 fh.log
+**/*.z64
+assets/smb3.c
+**/*.nes
 /pimoroni-pico/
 # Prerequisites
 *.d
@@ -34,7 +37,7 @@ fh.log
 *.app
 
 **/build
-.vscode
+
 
 # Apple filesystem cruft
 .DS_Store
