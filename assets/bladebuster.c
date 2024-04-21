@@ -2,7 +2,7 @@
 
 // Blade Buster (http://hlc6502.web.fc2.com/Bbuster.htm)
 // Generated from BladeBuster.nes using
-// xxd -i BladBuster.nes
+// xxd -i BladBuster.nes > bladebuster.c
 
 #define BUILTINROMNAME "Blade Buster"
 
