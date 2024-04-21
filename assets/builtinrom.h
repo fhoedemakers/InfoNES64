@@ -1,8 +1,6 @@
 #pragma once
-// Blade Buster (http://hlc6502.web.fc2.com/Bbuster.htm)
-// Generated from BladeBuster.nes using
-// xxd -i BladBuster.nes > builtinrom.h
 
+// Specify the name of the built-in ROM to include
 #define BUILTINROM_BLADEBUSTER
 extern unsigned char builtinrom[];
 extern unsigned int builtinrom_len;

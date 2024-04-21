@@ -32779,7 +32779,3 @@ unsigned char builtinrom[] = {
   0xff, 0xff, 0xff, 0xff
 };
 unsigned int builtinrom_len = 393232;
-
-#ifdef __cplusplus
-}
-#endif
