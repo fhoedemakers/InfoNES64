@@ -10,6 +10,10 @@ Built with [Libdragon](https://github.com/DragonMinded/libdragon)
 
 The emulator code is ported from [Infones by Jay Kumogata](https://github.com/jay-kumogata/InfoNES)
 
+## Release
+
+To try the emulator with the free built-in game Blade Buster, download infones.64 from the [releases](https://github.com/fhoedemakers/InfoNES64/releases/latest) page en copy it to your flash card.
+
 ## Building from source
 
 1. Install the Libdragon SDK. For more info and instructions, see https://github.com/DragonMinded/libdragon
