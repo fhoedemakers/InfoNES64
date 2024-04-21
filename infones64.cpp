@@ -209,7 +209,7 @@ void InfoNES_MessageBox(const char *pszMsg, ...)
     debugf("[MSG]");
     va_list args;
     va_start(args, pszMsg);
-    vdebugf(pszMsg, args);
+    vfprintf(stderr, pszMsg, args);
     va_end(args);
     debugf("\n");
 }
