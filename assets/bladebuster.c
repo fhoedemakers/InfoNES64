@@ -4,8 +4,6 @@
 // Generated from BladeBuster.nes using
 // xxd -i BladBuster.nes
 
-
-
 #define BUILTINROMNAME "Blade Buster"
 
 unsigned char builtinrom[] = {
