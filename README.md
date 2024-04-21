@@ -12,7 +12,7 @@ The emulator code is ported from [Infones by Jay Kumogata](https://github.com/ja
 
 ## Release
 
-To try the emulator with the free built-in game Blade Buster, download infones.64 from the [releases](https://github.com/fhoedemakers/InfoNES64/releases/latest) page en copy it to your flash card.
+To try the emulator with the free built-in game Blade Buster, download infones64.z64 from the [releases](https://github.com/fhoedemakers/InfoNES64/releases/latest) page en copy it to your flash card.
 
 ## Building from source
 
