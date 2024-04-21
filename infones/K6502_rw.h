@@ -345,8 +345,15 @@ static inline void (K6502_Write)(WORD wAddr, BYTE byData)
         // Palette mirror
         PPURAM[0x3f10] = PPURAM[0x3f14] = PPURAM[0x3f18] = PPURAM[0x3f1c] =
             PPURAM[0x3f00] = PPURAM[0x3f04] = PPURAM[0x3f08] = PPURAM[0x3f0c] = byData;
+        // PalTable[0x00] = PalTable[0x04] = PalTable[0x08] = PalTable[0x0c] =
+        //     PalTable[0x10] = PalTable[0x14] = PalTable[0x18] = PalTable[0x1c] = NesPalette[byData] | 0x8000;
+        // 
+        // Frank Hoedemakers 
+        // or-ing with 0x8000 results in rendering the colors incorrectly, because the leftmost bit of the red channel is set to 1
+        // Instead, reset the alfachannel bit to 0. This is the right most bit in case of the N64.
+        // This will be set tested in InfoNes.cpp, lines 841, 842 and set back to 1 in 846, 847
         PalTable[0x00] = PalTable[0x04] = PalTable[0x08] = PalTable[0x0c] =
-            PalTable[0x10] = PalTable[0x14] = PalTable[0x18] = PalTable[0x1c] = NesPalette[byData] | 0x8000;
+            PalTable[0x10] = PalTable[0x14] = PalTable[0x18] = PalTable[0x1c] = NesPalette[byData] & 0xFFFE;
       }
       else if (addr & 3)
       {
