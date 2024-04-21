@@ -4,7 +4,7 @@
 // Generated from BladeBuster.nes using
 // xxd -i BladBuster.nes > builtinrom.h
 
-#define BUILTINROM_GALAGA
+#define BUILTINROM_BLADEBUSTER
 extern unsigned char builtinrom[];
 extern unsigned int builtinrom_len;
 
