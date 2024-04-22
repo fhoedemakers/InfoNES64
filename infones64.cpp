@@ -340,6 +340,11 @@ void vblCallback(void)
     gTicks++;
 }
 
+void frameratecalc(int ovfl)
+{
+   debugf("FPS: %d\n", framecounter);
+   framecounter=0;
+}
 int main()
 {
 
@@ -352,7 +357,8 @@ int main()
     display_init(RESOLUTION_256x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
     register_VI_handler(vblCallback);
     controller_init();
-
+    timer_init();
+    new_timer(TIMER_TICKS(1000000), TF_CONTINUOUS, frameratecalc);
     romSelector_.init(NES_FILE_ADDR);
     _dc = display_get();
     void *buffer = (_dc)->buffer;
