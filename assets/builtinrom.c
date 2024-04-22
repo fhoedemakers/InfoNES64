@@ -28,6 +28,9 @@
 #ifdef BUILTINROM_CV3
 #include "CV3.c"  // not working
 #endif
+#ifdef BUILTINROM_SMB
+#include "smb.c"
+#endif
 char *GetBuiltinROMName()
 {
     return BUILTINROMNAME;
