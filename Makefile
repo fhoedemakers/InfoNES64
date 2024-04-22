@@ -1,9 +1,15 @@
 all: infones64.z64
+	@echo "Builded $(if $(RELEASE),release,debug)"
 .PHONY: all
 
 BUILD_DIR = build
-include n64.mk
 
+# include n64Release.mk when release parameter is set
+ifeq ($(RELEASE),1)
+include n64Release.mk
+else
+include n64.mk
+endif
 # add current folder and infones subfolder to include path
 INCDIR = -I. -Iinfones -Iassets
 # add INCDIR to CFLAGS

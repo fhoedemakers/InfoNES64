@@ -35,7 +35,7 @@ N64_TOOL = $(N64_BINDIR)/n64tool
 N64_SYM = $(N64_BINDIR)/n64sym
 N64_AUDIOCONV = $(N64_BINDIR)/audioconv64
 
-N64_C_AND_CXX_FLAGS =  -march=vr4300 -mtune=vr4300 -I$(N64_INCLUDEDIR)
+N64_C_AND_CXX_FLAGS =  -march=vr4300 -mtune=vr4300 -I$(N64_INCLUDEDIR) -DNDEBUG
 N64_C_AND_CXX_FLAGS += -falign-functions=32   # NOTE: if you change this, also change backtrace() in backtrace.c
 N64_C_AND_CXX_FLAGS += -ffunction-sections -fdata-sections -ffile-prefix-map="$(CURDIR)"=
 #N64_C_AND_CXX_FLAGS += -DN64 -O2 -Wall -Werror -Wno-error=deprecated-declarations -fdiagnostics-color=always
