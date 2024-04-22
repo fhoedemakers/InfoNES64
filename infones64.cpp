@@ -277,8 +277,14 @@ void(InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BY
 extern WORD PC;
 
 int framecounter = 0;
+int framedisplay = 0;
 void InfoNES_LoadFrame()
 {
+    
+    char buffer[10];
+    sprintf(buffer, "%d", framedisplay);
+    graphics_draw_text(_dc, 5, 5, buffer);
+    
     display_show(_dc);
     framecounter++;  
   
@@ -343,6 +349,7 @@ void vblCallback(void)
 void frameratecalc(int ovfl)
 {
    debugf("FPS: %d\n", framecounter);
+   framedisplay=framecounter;
    framecounter=0;
 }
 int main()
