@@ -1,0 +1,18 @@
+
+all: fpstest.z64
+.PHONY: all
+
+BUILD_DIR = build
+include n64.mk
+
+OBJS = $(BUILD_DIR)/fpstest.o
+
+timers.z64: N64_ROM_TITLE = "fpstest Test"
+
+$(BUILD_DIR)/fpstest.elf: $(OBJS)
+
+clean:
+	rm -rf $(BUILD_DIR) *.z64
+.PHONY: clean
+
+-include $(wildcard $(BUILD_DIR)/*.d))
