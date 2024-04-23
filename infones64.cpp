@@ -43,7 +43,7 @@
 #define PAD_CHECK_TIME   40
 
 volatile int gTicks; /* incremented every vblank */
-display_context_t _dc;
+surface_t *_dc;
 
 bool fps_enabled = false;
 
@@ -282,7 +282,7 @@ void InfoNES_LoadFrame()
 {
     
     char buffer[10];
-    sprintf(buffer, "%d", framedisplay);
+    sprintf(buffer, "FPS: %d", framedisplay);
     graphics_draw_text(_dc, 5, 5, buffer);
     
     display_show(_dc);
