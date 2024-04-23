@@ -15,7 +15,7 @@
 
 #include "builtinrom.h"
 
-#define NORENDER
+//#define NORENDER
 
 /* hardware definitions */
 // Pad buttons
