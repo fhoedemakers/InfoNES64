@@ -15,32 +15,34 @@
 
 #include "builtinrom.h"
 
+#define NORENDER
+
 /* hardware definitions */
 // Pad buttons
-#define A_BUTTON(a)     ((a) & 0x8000)
-#define B_BUTTON(a)     ((a) & 0x4000)
-#define Z_BUTTON(a)     ((a) & 0x2000)
+#define A_BUTTON(a) ((a) & 0x8000)
+#define B_BUTTON(a) ((a) & 0x4000)
+#define Z_BUTTON(a) ((a) & 0x2000)
 #define START_BUTTON(a) ((a) & 0x1000)
 
 // D-Pad
-#define DU_BUTTON(a)    ((a) & 0x0800)
-#define DD_BUTTON(a)    ((a) & 0x0400)
-#define DL_BUTTON(a)    ((a) & 0x0200)
-#define DR_BUTTON(a)    ((a) & 0x0100)
+#define DU_BUTTON(a) ((a) & 0x0800)
+#define DD_BUTTON(a) ((a) & 0x0400)
+#define DL_BUTTON(a) ((a) & 0x0200)
+#define DR_BUTTON(a) ((a) & 0x0100)
 
 // Triggers
-#define TL_BUTTON(a)    ((a) & 0x0020)
-#define TR_BUTTON(a)    ((a) & 0x0010)
+#define TL_BUTTON(a) ((a) & 0x0020)
+#define TR_BUTTON(a) ((a) & 0x0010)
 
 // Yellow C buttons
-#define CU_BUTTON(a)    ((a) & 0x0008)
-#define CD_BUTTON(a)    ((a) & 0x0004)
-#define CL_BUTTON(a)    ((a) & 0x0002)
-#define CR_BUTTON(a)    ((a) & 0x0001)
+#define CU_BUTTON(a) ((a) & 0x0008)
+#define CD_BUTTON(a) ((a) & 0x0004)
+#define CL_BUTTON(a) ((a) & 0x0002)
+#define CR_BUTTON(a) ((a) & 0x0001)
 
-#define PAD_DEADZONE     5
+#define PAD_DEADZONE 5
 #define PAD_ACCELERATION 10
-#define PAD_CHECK_TIME   40
+#define PAD_CHECK_TIME 40
 
 volatile int gTicks; /* incremented every vblank */
 surface_t *_dc;
@@ -49,15 +51,14 @@ bool fps_enabled = false;
 
 // RGB551 nes color palette
 const WORD NesPalette[64] = {
-    0x6319, 0x00ED, 0x2033, 0x502D, 0x701D, 0x8009, 0x7041, 0x5141, 
-    0x2201, 0x0281, 0x02C1, 0x0289, 0x01DD, 0x0001, 0x0001, 0x0001, 
-    0xAD6B, 0x0ABF, 0x49BF, 0x88BF, 0xB875, 0xD09B, 0xC141, 0x9A81, 
-    0x63C1, 0x24C1, 0x0501, 0x04D1, 0x03ED, 0x0001, 0x0001, 0x0001, 
-    0xFFFF, 0x557F, 0x943F, 0xD33F, 0xFABF, 0xFAF3, 0xFB95, 0xFCC1, 
-    0xBE01, 0x7F01, 0x4785, 0x275F, 0x2EBD, 0x4A53, 0x0001, 0x0001, 
-    0xFFFF, 0xB73F, 0xCEBF, 0xEE3F, 0xFDFF, 0xFDFD, 0xFE31, 0xFEA7, 
-    0xEF21, 0xCFA1, 0xB7E7, 0xAFF1, 0xAFBD, 0xBDEF, 0x0001, 0x0001
-};
+    0x6319, 0x00ED, 0x2033, 0x502D, 0x701D, 0x8009, 0x7041, 0x5141,
+    0x2201, 0x0281, 0x02C1, 0x0289, 0x01DD, 0x0001, 0x0001, 0x0001,
+    0xAD6B, 0x0ABF, 0x49BF, 0x88BF, 0xB875, 0xD09B, 0xC141, 0x9A81,
+    0x63C1, 0x24C1, 0x0501, 0x04D1, 0x03ED, 0x0001, 0x0001, 0x0001,
+    0xFFFF, 0x557F, 0x943F, 0xD33F, 0xFABF, 0xFAF3, 0xFB95, 0xFCC1,
+    0xBE01, 0x7F01, 0x4785, 0x275F, 0x2EBD, 0x4A53, 0x0001, 0x0001,
+    0xFFFF, 0xB73F, 0xCEBF, 0xEE3F, 0xFDFF, 0xFDFD, 0xFE31, 0xFEA7,
+    0xEF21, 0xCFA1, 0xB7E7, 0xAFF1, 0xAFBD, 0xBDEF, 0x0001, 0x0001};
 
 namespace
 {
@@ -119,10 +120,10 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
     static constexpr int START = 1 << 3;
     static constexpr int A = 1 << 0;
     static constexpr int B = 1 << 1;
-  controller_scan();
-     gKeys = get_keys_pressed();
+    
+    gKeys = get_keys_pressed();
 
-      ++rapidFireCounter;
+    ++rapidFireCounter;
     bool reset = false;
 
     for (int i = 0; i < 2; ++i)
@@ -137,9 +138,9 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
                 (A_BUTTON(gp) ? A : 0) |
                 (B_BUTTON(gp) ? B : 0) |
                 (Z_BUTTON(gp) ? SELECT : 0) |
-                (START_BUTTON(gp)  ? START : 0) |
+                (START_BUTTON(gp) ? START : 0) |
                 0;
-      
+
         int rv = v;
         if (rapidFireCounter & 2)
         {
@@ -268,7 +269,7 @@ void InfoNES_SoundClose()
 int InfoNES_GetSoundBufferSize()
 {
     // debugf("GetSoundBufferSize\n");
-    return 256; // TODO
+    return 16; // TODO
 }
 void(InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
 {
@@ -280,26 +281,35 @@ int framecounter = 0;
 int framedisplay = 0;
 void InfoNES_LoadFrame()
 {
-    
+
     char buffer[10];
     sprintf(buffer, "FPS: %d", framedisplay);
+#ifndef NORENDER
     graphics_draw_text(_dc, 5, 5, buffer);
-    
+
     display_show(_dc);
-    framecounter++;  
-  
+#endif
+    framecounter++;
+    controller_scan();
 }
 
 WORD buf[256];
 void(InfoNES_PreDrawLine)(int line)
 {
-    if ( line == 4) {
+    WORD *buffer = nullptr;
+#ifndef NORENDER
+    if (line == 4)
+    {
         // debugf("Getting Display Context %d\n", line);
         _dc = display_get();
     }
-    // get the correct position in the framebuffer
-    WORD *buffer = ((WORD *)(_dc)->buffer) + (line << 8);
+    buffer = ((WORD *)(_dc)->buffer) + (line << 8);
     assert(buffer != nullptr);
+#else
+    buffer = buf;
+#endif
+    // get the correct position in the framebuffer
+
     InfoNES_SetLineBuffer(buffer, 256);
 }
 
@@ -348,9 +358,9 @@ void vblCallback(void)
 
 void frameratecalc(int ovfl)
 {
-   debugf("FPS: %d\n", framecounter);
-   framedisplay=framecounter;
-   framecounter=0;
+    debugf("FPS: %d\n", framecounter);
+    framedisplay = framecounter;
+    framecounter = 0;
 }
 int main()
 {
@@ -373,7 +383,7 @@ int main()
     debugf("Width: %d\n", _dc->width);
     debugf("Height: %d\n", _dc->height);
     debugf("Stride: %d\n", _dc->stride);
-     display_show(_dc);
+    display_show(_dc);
     InfoNES_Main();
     return 0;
 }
