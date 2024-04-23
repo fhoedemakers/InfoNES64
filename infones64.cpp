@@ -361,7 +361,7 @@ int main()
     debugf("Now running %s\n", GetBuiltinROMName());
 
     /* Initialize peripherals */
-    display_init(RESOLUTION_256x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    display_init(RESOLUTION_256x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
     register_VI_handler(vblCallback);
     controller_init();
     timer_init();
