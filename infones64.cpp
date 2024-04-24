@@ -121,8 +121,7 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
     static constexpr int A = 1 << 0;
     static constexpr int B = 1 << 1;
     
-    gKeys = get_keys_pressed();
-
+    
     ++rapidFireCounter;
     bool reset = false;
 
@@ -291,6 +290,7 @@ void InfoNES_LoadFrame()
 #endif
     framecounter++;
     controller_scan();
+    gKeys = get_keys_pressed();
 }
 
 WORD buf[256];
@@ -351,10 +351,10 @@ int InfoNES_Menu()
 }
 
 /* vblank callback */
-void vblCallback(void)
-{
-    gTicks++;
-}
+// void vblCallback(void)
+// {
+//     gTicks++;
+// }
 
 void frameratecalc(int ovfl)
 {
@@ -372,7 +372,7 @@ int main()
 
     /* Initialize peripherals */
     display_init(RESOLUTION_256x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
-    register_VI_handler(vblCallback);
+    // register_VI_handler(vblCallback);
     controller_init();
     timer_init();
     new_timer(TIMER_TICKS(1000000), TF_CONTINUOUS, frameratecalc);
