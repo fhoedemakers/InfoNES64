@@ -15,7 +15,7 @@
 
 #include "builtinrom.h"
 
-//#define NORENDER
+// #define NORENDER
 
 /* hardware definitions */
 // Pad buttons
@@ -46,6 +46,8 @@
 
 volatile int gTicks; /* incremented every vblank */
 surface_t *_dc;
+bool controller1IsInserted = false;
+bool controller2IsInserted = false;
 
 bool fps_enabled = false;
 
@@ -120,13 +122,17 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
     static constexpr int START = 1 << 3;
     static constexpr int A = 1 << 0;
     static constexpr int B = 1 << 1;
-    
-    
+
     ++rapidFireCounter;
     bool reset = false;
 
     for (int i = 0; i < 2; ++i)
     {
+        if ((i == 0 && controller1IsInserted == false) ||
+            (i == 1 && controller2IsInserted == false))
+        {
+            continue;
+        }
         auto &dst = i == 0 ? *pdwPad1 : *pdwPad2;
         auto gp = gKeys.c[i].data >> 16;
 
@@ -358,10 +364,27 @@ int InfoNES_Menu()
 
 void frameratecalc(int ovfl)
 {
-    debugf("FPS: %d\n", framecounter);
+    debugf("%d\n", framecounter);
     framedisplay = framecounter;
     framecounter = 0;
 }
+
+void checkcontrollers()
+{
+    controller1IsInserted = controller2IsInserted = false;
+    int controllers = get_controllers_present();
+    if (controllers & CONTROLLER_1_INSERTED)
+    {
+        debugf("Controller 1 inserted\n");
+        controller1IsInserted = true;
+    }
+    if (controllers & CONTROLLER_2_INSERTED)
+    {
+        debugf("Controller 2 inserted\n");
+        controller2IsInserted = true;
+    }
+}
+
 int main()
 {
 
@@ -384,6 +407,7 @@ int main()
     debugf("Height: %d\n", _dc->height);
     debugf("Stride: %d\n", _dc->stride);
     display_show(_dc);
+    checkcontrollers();
     InfoNES_Main();
     return 0;
 }
