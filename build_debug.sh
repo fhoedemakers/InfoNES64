@@ -1,4 +1,4 @@
 :
-# Build release version of the project
+# Build debug version of the project
 make clean
-make RELEASE=1
+make D=1
