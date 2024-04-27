@@ -1,7 +1,7 @@
 #pragma once
 
 // Specify the name of the built-in ROM to include
-#define BUILTINROM_SMB
+#define BUILTINROM_BLADEBUSTER
 extern unsigned char builtinrom[];
 extern unsigned int builtinrom_len;
 
