@@ -39,7 +39,7 @@ assets/smb.c
 *.lib
 
 # Executables
-*.exe
+#*.exe
 *.out
 *.app
 
