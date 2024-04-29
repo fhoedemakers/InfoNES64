@@ -6,6 +6,17 @@ Copy infones64.z64 to your Nintendo 64 flash card.
 
 # Release notes
 
+## v0.4
+
+### Features
+
+- Changed build and release workflow
+
+### Fixes
+
+- none
+
+
 ## v0.3
 
 ### Features
