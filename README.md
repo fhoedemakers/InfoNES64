@@ -8,7 +8,8 @@ A Nintendo Entertainment Emulator running on th Nintendo 64.  Run it on real har
 It has a unlicensed built-in game ["Blade Buster"](https://www.rgcd.co.uk/2011/05/blade-buster-nes.html), but you can replace it with your own game. See below.
 
 Built with [Libdragon](https://github.com/DragonMinded/libdragon)
-![Libdragon](/assets/libdragon.png)
+
+<img src="/assets/libdragon.png" width="200" />
 
 ## Controls
 
