@@ -1196,7 +1196,6 @@ void (InfoNES_pAPUHsync)(bool enabled)
   InfoNES_SoundOutput(n,
                       wave_buffers[0], wave_buffers[1], wave_buffers[2],
                       wave_buffers[3], wave_buffers[4]);
-  }
 #endif
 
   entertime = getPassedClocks();

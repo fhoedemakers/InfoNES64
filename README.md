@@ -2,11 +2,23 @@
 
 A Nintendo Entertainment Emulator running on th Nintendo 64.  Run it on real hardware using a flash drive, or an emulator.
 
-> Note This project is more of a fun thing for me to try if it works. It runs way too slow to be really usable and playable and there is no sound. I don't know if the emulator will ever run at full speed. Help is always welcome. 
+> [!NOTE]
+> This project is more of a fun thing for me to try if it works. It runs way too slow to be really usable and playable. I don't know if the emulator will ever run at full speed. Help is always welcome. 
 
 It has a unlicensed built-in game ["Blade Buster"](https://www.rgcd.co.uk/2011/05/blade-buster-nes.html), but you can replace it with your own game. See below.
 
 Built with [Libdragon](https://github.com/DragonMinded/libdragon)
+![Libdragon](/assets/libdragon.png)
+
+## Controls
+
+- D-Pad: Move
+- A: Button A
+- B: Button B
+- Start: Start
+- Z + A : Toggle frame rate display
+- Z + R : Toggle sound (default off)
+
 
 The emulator code is ported from [Infones by Jay Kumogata](https://github.com/jay-kumogata/InfoNES)
 

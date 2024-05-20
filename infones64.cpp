@@ -46,7 +46,6 @@
 #define PAD_ACCELERATION 10
 #define PAD_CHECK_TIME 40
 
-
 volatile int gTicks; /* incremented every vblank */
 surface_t *_dc;
 bool controller1IsInserted = false;
@@ -294,6 +293,40 @@ int InfoNES_GetSoundBufferSize()
 
 void(InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
 {
+    short p[2];
+    if ( samples == 0 )
+    {
+        return;
+    }
+    // debugf("InfoNES_SoundOutput %d\n", samples);
+    while (samples--)
+    {
+
+        int w1 = *wave1++;
+        int w2 = *wave2++;
+        int w3 = *wave3++;
+        int w4 = *wave4++;
+        int w5 = *wave5++;
+        //            w3 = w2 = w4 = w5 = 0;
+        int l = w1 * 6 + w2 * 3 + w3 * 5 + w4 * 3 * 17 + w5 * 2 * 32;
+        int r = w1 * 3 + w2 * 6 + w3 * 5 + w4 * 3 * 17 + w5 * 2 * 32;
+        
+        p[0] = (short)l;
+        p[1] = (short)r;
+        audio_push(p,2,true);
+
+        // pulse_out = 0.00752 * (pulse1 + pulse2)
+        // tnd_out = 0.00851 * triangle + 0.00494 * noise + 0.00335 * dmc
+
+        // 0.00851/0.00752 = 1.131648936170213
+        // 0.00494/0.00752 = 0.6569148936170213
+        // 0.00335/0.00752 = 0.4454787234042554
+
+        // 0.00752/0.00851 = 0.8836662749706228
+        // 0.00494/0.00851 = 0.5804935370152762
+        // 0.00335/0.00851 = 0.3936545240893067
+    }
+
 
 }
 
@@ -416,6 +449,8 @@ int main()
     display_init(RESOLUTION_256x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
     // register_VI_handler(vblCallback);
     controller_init();
+    debugf("Init audio\n");
+    audio_init(44100, 4);
     timer_init();
     new_timer(TIMER_TICKS(1000000), TF_CONTINUOUS, frameratecalc);
     romSelector_.init(NES_FILE_ADDR);
