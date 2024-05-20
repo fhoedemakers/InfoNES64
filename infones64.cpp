@@ -17,6 +17,8 @@
 
 // #define NORENDER
 
+// mute sound for now
+#define SOUNDISMUTED 1
 /* hardware definitions */
 // Pad buttons
 #define A_BUTTON(a) ((a) & 0x8000)
@@ -44,13 +46,14 @@
 #define PAD_ACCELERATION 10
 #define PAD_CHECK_TIME 40
 
+
 volatile int gTicks; /* incremented every vblank */
 surface_t *_dc;
 bool controller1IsInserted = false;
 bool controller2IsInserted = false;
 
 bool fps_enabled = false;
-
+extern int APU_Mute;
 // RGB551 nes color palette
 const WORD NesPalette[64] = {
     0x6319, 0x00ED, 0x2033, 0x502D, 0x701D, 0x8009, 0x7041, 0x5141,
@@ -169,6 +172,12 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
         }
         if (p1 & SELECT)
         {
+            // if (pushed & SELECT)
+            // {
+            //     APU_Mute = !APU_Mute;
+            //     debugf("APU %s\n", APU_Mute ? "Muted" : "Unmuted");
+            // }
+
             // if (pushed & LEFT)
             // {
             //     saveNVRAM();
@@ -188,11 +197,15 @@ void InfoNES_PadState(DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem)
             }
             if (pushed & A)
             {
-                rapidFireMask[i] ^= A_BUTTON(gp);
+                fps_enabled = !fps_enabled;
+                debugf("FPS %s\n", fps_enabled ? "Enabled" : "Disabled");
+                // rapidFireMask[i] ^= A_BUTTON(gp);
             }
             if (pushed & B)
             {
-                rapidFireMask[i] ^= B_BUTTON(gp);
+                // rapidFireMask[i] ^= B_BUTTON(gp);
+                APU_Mute = !APU_Mute;
+                debugf("APU %s\n", APU_Mute ? "Muted" : "Unmuted");
             }
             // if (pushed & UP)
             // {
@@ -271,13 +284,17 @@ void InfoNES_SoundClose()
 {
 }
 
+#if 0
 int InfoNES_GetSoundBufferSize()
 {
     // debugf("GetSoundBufferSize\n");
-    return 16; // TODO
+    return 16; // 
 }
+#endif
+
 void(InfoNES_SoundOutput)(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
 {
+
 }
 
 extern WORD PC;
@@ -286,12 +303,14 @@ int framecounter = 0;
 int framedisplay = 0;
 void InfoNES_LoadFrame()
 {
-
-    char buffer[10];
-    sprintf(buffer, "FPS: %d", framedisplay);
 #ifndef NORENDER
-    graphics_draw_text(_dc, 5, 5, buffer);
-
+    char buffer[15];
+    if (fps_enabled)
+    {
+        char mute = APU_Mute ? 'M' : ' ';
+        sprintf(buffer, "FPS: %d %c", framedisplay, mute);
+        graphics_draw_text(_dc, 5, 5, buffer);
+    }
     display_show(_dc);
 #endif
     framecounter++;
@@ -387,7 +406,7 @@ void checkcontrollers()
 
 int main()
 {
-
+    APU_Mute = SOUNDISMUTED;
     debug_init(DEBUG_FEATURE_LOG_ISVIEWER);
     debugf("Starting InfoNES 64, a Nintendo Entertainment System emulator for the Nintendo 64\n");
     debugf("Built on %s %s using libdragon\n", __DATE__, __TIME__);

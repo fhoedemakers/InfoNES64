@@ -1165,8 +1165,10 @@ void (InfoNES_pAPUHsync)(bool enabled)
   auto n = n16 >> 16;
   leftSamples16 = n16 - (n << 16);
 
+#if 0
   int bufferLeft = InfoNES_GetSoundBufferSize();
   n = std::min<int>(bufferLeft, n);
+#endif
 
   if (enabled)
   {
@@ -1176,7 +1178,13 @@ void (InfoNES_pAPUHsync)(bool enabled)
     ApuRenderingWave4(n);
     ApuRenderingWave5(n);
     ApuCtrl = ApuCtrlNew;
+#if 1
+    InfoNES_SoundOutput(n,
+                      wave_buffers[0], wave_buffers[1], wave_buffers[2],
+                      wave_buffers[3], wave_buffers[4]);
+#endif
   }
+#if 0
   else
   {
     memset(&wave_buffers[0][0], 0, n);
@@ -1185,10 +1193,11 @@ void (InfoNES_pAPUHsync)(bool enabled)
     memset(&wave_buffers[3][0], 0, n);
     memset(&wave_buffers[4][0], 0, n);
   }
-
   InfoNES_SoundOutput(n,
                       wave_buffers[0], wave_buffers[1], wave_buffers[2],
                       wave_buffers[3], wave_buffers[4]);
+  }
+#endif
 
   entertime = getPassedClocks();
   cur_event = 0;
